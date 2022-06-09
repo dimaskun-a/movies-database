@@ -2,12 +2,9 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Hero from '../../components/Hero/Hero';
 import Movies from '../../components/Movies/Movies';
+import ENDPOINTS from '../../utils/constants/endpoints';
 
 function TopRatedMovie() {
-  // simpan API_KEY dan URL ke variable
-  const API_KEY = process.env.REACT_APP_API_KEY;
-  const URL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}`;
-
   // Membuat state movies
   const [movies, setMovies] = useState([]);
 
@@ -20,9 +17,9 @@ function TopRatedMovie() {
   // eslint-disable-next-line 
   async function getTopRatedMovies() {
     // Fetch data dari axios
-    const response = await axios(URL);
+    const response = await axios(ENDPOINTS.TOP_RATED);
 
-    // simpan data ke state movie
+    // simpan data ke state movies
     setMovies(response.data.results);
     // eslint-disable-next-line
   }

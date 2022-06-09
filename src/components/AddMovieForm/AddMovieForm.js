@@ -1,176 +1,228 @@
-import { nanoid } from "nanoid";
-import { useState } from "react";
-import Alert from "../Alert/Alert";
-import Button from "../ui/Button";
-import styles from "./AddMovieForm.module.css";
-
-// Menangkap props
-function AddMovieForm(props) {
-  // Destructing props: state movies
-  const { movies, setMovies } = props;
-
-  const [formData, setFormData] = useState({
-    title: "",
-    date: "",
-    poster: "",
-    type: "",
-  });
-
-  /**
+/**
+ * import CSS Module AddMovieForm
+ * simpan di variable styles
+ */
+ import { nanoid } from 'nanoid';
+ import React from 'react';
+ import { useState } from 'react';
+ import Button from '../ui/Button';
+ import styles from './AddMovieForm.module.css';
+ 
+ // Membuat Component AddMovieForm
+ function AddMovieForm(props) {
+   const { movies, setMovies } = props;
+ 
+   // Buat state object
+   const [formData, setFormData] = useState({
+     title: '',
+     date: '',
+     link: '',
+     genre: '',
+   });
+ 
+   /**
    * TODO
    * - PROBLEM: 1 ERROR 1 STATE.
    * - TODO: REFACTOR SEMUA ERROR JADI 1 STATE.
    */
-  const [isTitleError, setIsTitleError] = useState(false);
-  const [isDateError, setIsDateError] = useState(false);
-  const [isPosterError, setIsPosterError] = useState(false);
-
-  function handleChange(e) {
-    // Destructing name dan value.
-    const { name, value } = e.target;
-
-    /**
+   const [ErrorData, setErrorData] = useState({
+     isTitleError: false,
+     isDateError: false,
+     isLinkError: false,
+     isGenreError: false,
+   });
+ 
+   // Buat fungsi handleChange
+   function handleChange(e) {
+     // Destructing name dan value.
+     const { name, value } = e.target;
+ 
+     /**
      * Mengupdate state berupa object:
      * - Menggunakan spread operator:
-     * - Update property berdasarkan apapun nilai name.
+     * - Update property berdasarkan nilai name.
      */
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  }
-
-  function validate() {
-    if (title === "") {
-      setIsTitleError(true);
-      return false;
-    } else if (date === "") {
-      setIsDateError(true);
-      setIsTitleError(false);
-      return false;
-    } else if (poster === "") {
-      setIsPosterError(true);
-      setIsDateError(false);
-      return false;
-    } else {
-      setIsTitleError(false);
-      setIsDateError(false);
-      return true;
-    }
-  }
-
-  function addMovie() {
-    const movie = {
-      id: nanoid(),
-      title: title,
-      year: date,
-      type: type,
-      poster: poster,
-    };
-
-    // SOLVED: HOW TO ADD MOVIE TO MOVIES :)
-    setMovies([...movies, movie]);
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    validate() && addMovie();
-  }
-
-  const { title, date, poster, type } = formData;
-
-  return (
-    <div className={styles.container}>
-      <section className={styles.form}>
-        <div className={styles.form__left}>
-          <img
-            className={styles.form__image}
-            src="https://picsum.photos/536/354"
-            alt=""
-          />
-        </div>
-        <div className={styles.form__right}>
-          <h2 className={styles.form__title}>Add Movie Form</h2>
-          <form onSubmit={handleSubmit}>
-            <div className={styles.form__group}>
-              <label htmlFor="title" className={styles.form__label}>
-                Title
-              </label>
-              <input
-                id="title"
-                className={styles.form__input}
-                type="text"
-                name="title"
-                // Memberikan value input: title
-                value={title}
-                // Memberikan event onChange
-                onChange={handleChange}
-              />
-              {/*
-               * Menambahkan infline if: operator &&
-               * Jika isTitleError true maka render error
-               */}
-              {isTitleError && <Alert>Title Wajib Diisi</Alert>}
-            </div>
-            <div className={styles.form__group}>
-              <label htmlFor="date" className={styles.form__label}>
-                Date
-              </label>
-              <input
-                id="date"
-                className={styles.form__input}
-                type="text"
-                name="date"
-                // Memberikan value input: date
-                value={date}
-                // Memberikan event onChange
-                onChange={handleChange}
-              />
-              {/*
-               * Menambahkan infline if: operator &&
-               * Jika isDateError true maka render error
-               */}
-              {isDateError && <Alert>Date Wajib Diisi</Alert>}
-            </div>
-            <div className={styles.form__group}>
-              <label htmlFor="poster" className={styles.form__label}>
-                Poster
-              </label>
-              <input
-                onChange={handleChange}
-                id="poster"
-                className={styles.form__input}
-                name="poster"
-                type="text"
-                value={poster}
-              />
-              {isPosterError && <Alert>Poster Wajib Diisi</Alert>}
-            </div>
-            <div className={styles.form__group}>
-              <label htmlFor="type" className={styles.form__label}>
-                Type
-              </label>
-              <select
-                id="type"
-                className={styles.form__select}
-                name="type"
-                value={type}
-                onChange={handleChange}
-              >
-                <option value="Action">Action</option>
-                <option value="Drama">Drama</option>
-                <option value="Horor">Horor</option>
-              </select>
-            </div>
-            <div>
-              <Button full>Add Movie</Button>
-            </div>
-          </form>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-export default AddMovieForm;
+     setFormData({
+       ...formData,
+       [name]: value,
+     });
+   }
+ 
+   function validate() {
+     if (title === '') {
+       setErrorData({
+         ...ErrorData,
+         isTitleError: true,
+       });
+       return false;
+     } else if (date === '') {
+       setErrorData({
+         ...ErrorData,
+         isDateError: true,
+         isTitleError: false,
+       });
+       return false;
+     } else if (link === '') {
+       setErrorData({
+         ...ErrorData,
+         isLinkError: true,
+         isDateError: false,
+       });
+       return false;
+     } else if (genre === '') {
+       setErrorData({
+         ...ErrorData,
+         isGenreError: true,
+         isLinkError: false,
+       });
+       return false;
+     } else {
+       setErrorData({
+         ...ErrorData,
+         isTitleError: false,
+         isDateError: false,
+         isLinkError: false,
+         isGenreError: false,
+       });
+       return true;
+     }
+   }
+ 
+   function addMovie() {
+     const movie = {
+       id: nanoid(),
+       title: title,
+       year: date,
+       type: genre,
+       poster: link,
+     };
+ 
+     setMovies([...movies, movie]);
+   }
+ 
+   // Buat fungsi handleSubmit
+   function handleSubmit(e) {
+     // cegah form agar tidak ke refresh
+     e.preventDefault();
+ 
+     validate() && addMovie();
+   }
+ 
+   const { title, date, link, genre } = formData;
+   const { isTitleError, isDateError, isLinkError, isGenreError } = ErrorData;
+ 
+   return (
+     <div className={styles.container}>
+       <section className={styles.AddMovieForm}>
+         <div className={styles.AddMovieForm__left}>
+           <img
+             className={styles.AddMovieForm__image}
+             src="https://picsum.photos/536/354"
+             alt="placeholder"
+           />
+         </div>
+         <div className={styles.AddMovieForm__right}>
+           <h2 className={styles.AddMovieForm__title}>Add Movie</h2>
+           <form onSubmit={handleSubmit}>
+             <label className={styles.AddMovieForm__isi} htmlFor="title">
+               Title
+             </label>
+             <br />
+             <input
+               className={styles.AddMovieForm__input}
+               type="text"
+               name="title"
+               value={title}
+               // Tambahkan event onChange
+               onChange={handleChange}
+             />
+             {/** Jika title error maka munculkan pesan, jika tidak maka kosong */}
+             {isTitleError && (
+               <span className={styles.AddMovieForm__error}>
+                 Title wajib diisi
+               </span>
+             )}
+             <br />
+             <label className={styles.AddMovieForm__isi} htmlFor="year">
+               Year
+             </label>
+             <br />
+             <input
+               className={styles.AddMovieForm__input}
+               type="text"
+               name="date"
+               value={date}
+               // Tambahkan event onChange
+               onChange={handleChange}
+             />
+             {/** Jika year error maka munculkan pesan, jika tidak maka kosong */}
+             {isDateError && (
+               <span className={styles.AddMovieForm__error}>
+                 Year wajib diisi
+               </span>
+             )}
+             <br />
+             <label className={styles.AddMovieForm__isi} htmlFor="link">
+               Link images
+             </label>
+             <br />
+             <input
+               className={styles.AddMovieForm__input}
+               type="text"
+               name="link"
+               value={link}
+               // Tambahkan event onChange
+               onChange={handleChange}
+             />
+             {/** Jika link error maka munculkan pesan, jika tidak maka kosong */}
+             {isLinkError && (
+               <span className={styles.AddMovieForm__error}>
+                 Link images wajib diisi
+               </span>
+             )}
+             <br />
+             <label className={styles.AddMovieForm__isi} htmlFor="genre">
+               Genre
+             </label>
+             <br />
+             <select
+               className={styles.AddMovieForm__select}
+               name="genre"
+               onChange={handleChange}
+               value={genre}
+             >
+               <option value=""></option>
+               <option value="Action">Action</option>
+               <option value="Adventure">Adventure</option>
+               <option value="Comedy">Comedy</option>
+               <option value="Drama">Drama</option>
+               <option value="Fantasy">Fantasy</option>
+               <option value="Horor">Horor</option>
+               <option value="Romance">Romance</option>
+               <option value="Thriller">Thriller</option>
+             </select>
+             {/** Jika genre error maka munculkan pesan, jika tidak maka kosong */}
+             {isGenreError && (
+               <span className={styles.AddMovieForm__error}>
+                 Genre wajib diisi
+               </span>
+             )}
+             <br />
+             <br />
+             {/* <input
+               className={styles.AddMovieForm__submit}
+               type="submit"
+               value="Submit"
+             /> */}
+             <div>
+               <Button full>Add Movie</Button>
+             </div>
+           </form>
+         </div>
+       </section>
+     </div>
+   );
+ }
+ 
+ // export Component AddMovieForm
+ export default AddMovieForm;
